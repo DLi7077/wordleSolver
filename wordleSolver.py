@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-wordfile= open('all5letter.txt','r')
+wordfile= open('5letter.txt','r')
 word= wordfile.read()
 wordList= word.split('\n')
 letterList = []
@@ -31,11 +31,17 @@ while(userIn.lower()!='q' and dfcopy.size>1):
     outcome =input("That was invalid; Enter outcome in boolean:\n")
   
   #update outcomes
-  print("previous size:",dfcopy.size)
+  print("previous size:",int(dfcopy.size/5))
   
   for idx in range (len(outcome)):
     if outcome[idx]=='0':
-      dfcopy=dfcopy[~dfcopy.eq(userIn[idx]).any(1)]
+      dupeSearch=userIn[idx+1:].find(userIn[idx])+1
+      print("dupe index:", dupeSearch)
+      if(dupeSearch!=0 and userIn[dupeSearch]!='0'):
+        dupeSearch=dupeSearch
+      else:
+        #update dataframe to be rows that dont contain the letter
+        dfcopy=dfcopy[~dfcopy.eq(userIn[idx]).any(1)]
       
     elif outcome[idx]=='1':
       #update dataframe to be rows that contain the letter
@@ -47,8 +53,12 @@ while(userIn.lower()!='q' and dfcopy.size>1):
       
     elif outcome[idx]=='2':
       dfcopy=dfcopy[dfcopy[str(idx)]== userIn[idx]]
-
-  print("updated size:",dfcopy.size)
+  
+  if (dfcopy.size/5==1):
+    print("Nice! we found the word!!")
+    print('\t\t',''.join(dfcopy.iloc[0].astype(str).values.tolist()))
+    quit()
+  print("updated size:",int(dfcopy.size/5))
   print(dfcopy)
-
+  
 print('good job!! the word was\n',dfcopy)
