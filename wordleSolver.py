@@ -1,5 +1,18 @@
 import pandas as pd
 import re
+
+def getWordInput():
+  userIn= input("Enter a 5 letter word:\n")
+  while(len(userIn)!=5 or not userIn in wordList):
+    userIn= input("Invalid input..\nEnter a 5 letter word:\n")
+  return userIn
+def getOutcomeInput():
+  outcome =input("Enter outcome in boolean\nex: 0 is none, 1 exists, 2 is at position\n")
+  outcome= str(outcome)
+  
+  while (re.fullmatch(r'[0-2]{5}',outcome)is None):
+    outcome =input("That was invalid; Enter outcome in boolean:\n")
+  return outcome
 wordfile= open('5letter.txt','r')
 word= wordfile.read()
 wordList= word.split('\n')
@@ -17,26 +30,19 @@ print("Welcome to wordle solver. Type \'Q\' to quit\n")
 
 dfcopy= worddf
 while(userIn.lower()!='q' and dfcopy.size>1):
-  userIn= input("Enter a 5 letter word:\n")
 
-  # prompt for letter input
-  while(len(userIn)!=5):
-    userIn= input("that wasn't 5 letters\nEnter a 5 letter word:\n")
-  
+  # prompt for word input
+  userIn=getWordInput()
+
   #prompt for outcome on board
-  outcome =input("Enter outcome in boolean\nex: 0 is none, 1 exists, 2 is at position\n")
-  outcome= str(outcome)
-  
-  while (re.fullmatch(r'[0-2]{5}',outcome)is None):
-    outcome =input("That was invalid; Enter outcome in boolean:\n")
+  outcome= getOutcomeInput()
   
   #update outcomes
   print("previous size:",int(dfcopy.size/5))
   
   for idx in range (len(outcome)):
     if outcome[idx]=='0':
-      dupeSearch=userIn[idx+1:].find(userIn[idx])+1
-      print("dupe index:", dupeSearch)
+      dupeSearch=(userIn[0:idx]+userIn[idx+1:]).find(userIn[idx])+1
       if(dupeSearch!=0 and userIn[dupeSearch]!='0'):
         dupeSearch=dupeSearch
       else:
@@ -55,10 +61,12 @@ while(userIn.lower()!='q' and dfcopy.size>1):
       dfcopy=dfcopy[dfcopy[str(idx)]== userIn[idx]]
   
   if (dfcopy.size/5==1):
-    print("Nice! we found the word!!")
+    print("Kevin: Nice. we found the word!!")
     print('\t\t',''.join(dfcopy.iloc[0].astype(str).values.tolist()))
+    quit()
+  if (dfcopy.size/5==0):
+    print("you mistyped something, or theres a bug")
     quit()
   print("updated size:",int(dfcopy.size/5))
   print(dfcopy)
   
-print('good job!! the word was\n',dfcopy)
