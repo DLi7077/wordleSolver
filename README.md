@@ -1,10 +1,10 @@
 # wordleSolver
+clone this repo: `$git clone https://github.com/DLi7077/wordleSolver.git`
 
-navigate to this repo in your folder
-`/wordleSolver`
+navigate to the folder: `$cd .\wordleSolver\`
 
 run: 
-`python wordleSolver.py`
+`$python wordleSolver.py`
 
 type in any letter to start
 
